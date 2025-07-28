@@ -1,1 +1,1 @@
-Try everything embrace everything
+Try everything
