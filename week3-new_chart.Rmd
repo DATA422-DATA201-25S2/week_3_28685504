@@ -28,3 +28,17 @@ plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+library(ggplot2)
+library(dplyr)
+
+mean_data <- mtcars %>%
+    group_by(cyl) %>%
+    summarise(mean_disp = mean(disp))  
+
+ggplot(mean_data, aes(x = factor(cyl), y = mean_disp)) +
+    geom_bar(stat = "identity") + 
+    labs(title = "mean engine displacement by cylinders",
+         x = "cyl",
+         y = "mean disp (cubic inches)") 
+
