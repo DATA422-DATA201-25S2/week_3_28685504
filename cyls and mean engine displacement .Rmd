@@ -1,0 +1,74 @@
+---
+title: "Mean engine"
+author: "Lamy"
+date: "2025-07-30"
+output: pdf_document
+---
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyverse)
+```
+
+```{r}
+library(knitr)
+library(kableExtra)
+
+kableExtra::kable_styling(
+  knitr::kable(
+    mtcars_summary,
+    caption = "Table 1: Mean engine displacement by number of cylinders", # Table title
+    col.names = c("Cylinders", "Displacement"),                          # Rename columns for better readability
+    digits = 2,                                                          # Round values to 2 decimal places
+    align = c("c", "r")                                                  # Column alignment (center for first column, right for second)
+  ),
+  bootstrap_options = c("striped", "hover", "condensed"), # Add striped rows, hover effect, and compact layout
+  full_width = FALSE,                                      # Prevent table from stretching to full page width
+  position = "center",                                     # Center the table on the page
+  font_size = 12                                           # Set font size
+)
+```
+
+```{r}
+
+# 1. Calculate average displacement )
+mean_data <- mtcars %>%
+  group_by(cyl) %>%
+  summarise(mean_disp = mean(disp))  
+
+# 2. Core plotting code
+ggplot(mean_data, aes(x = factor(cyl), y = mean_disp)) +
+  geom_bar(
+    stat = "identity",     # Use calculated mean values as bar heights
+    fill = "darkgray"      # Fill bars with dark gray (match the target image)
+  ) +
+  labs(
+    title = "Figure 1. Mean engine displacement by number of cylinders.",
+    x = "Number of Cylinders",
+    y = "Engine Displacement (cm^3)"  
+  ) +
+  # 3. Adjust X-axis ticks (show 3-9)
+  scale_x_discrete(
+    limits = as.factor(3:9),  # Force display of ticks from 3 to 9
+    expand = expansion(add = 0.5)  # Adjust spacing between bars and ticks
+  ) +
+  # 4. Adjust Y-axis range (from 0 to 400 to match the image)
+  scale_y_continuous(
+    limits = c(0, 400),       # Set Y-axis upper limit to 400
+    expand = c(0, 0)          # Remove default Y-axis expansion space
+  ) +
+  # 5. Theme adjustments (clean style to match the image)
+  theme_minimal() +
+  theme(
+    panel.grid.major.x = element_blank(),  # Hide major X-axis grid lines
+    panel.grid.minor = element_blank(),    # Hide minor grid lines
+    plot.title = element_text(hjust = 0.5) # Center the plot title
+  )
+```
